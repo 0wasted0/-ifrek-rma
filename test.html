@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #4CAF50;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type=submit]:hover {
+            background: #45a049;
+        }
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Login Test</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <input type="submit" value="Giriş Yap">
+            <div class="message" id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        // Tek bir hesap için kullanıcı adı ve şifre
+        const correctUser = "0wasted0";
+        const correctPass = "Test123!"; // Buraya kendi şifreni koyabilirsin
+
+        // Basit brute-force önleme (3 yanlış deneme)
+        let attemptCount = 0;
+        const maxAttempts = 3;
+        let lockTime = 0;
+
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            if(lockTime > Date.now()) {
+                document.getElementById("message").textContent = "Çok fazla yanlış deneme. Lütfen bekleyin.";
+                return;
+            }
+
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+
+            if(user === correctUser && pass === correctPass) {
+                document.getElementById("message").style.color = "green";
+                document.getElementById("message").textContent = "Giriş Başarılı!";
+                attemptCount = 0; // sıfırla
+            } else {
+                attemptCount++;
+                document.getElementById("message").style.color = "red";
+                document.getElementById("message").textContent = `Yanlış kullanıcı adı veya şifre. Deneme: ${attemptCount}`;
+
+                if(attemptCount >= maxAttempts) {
+                    lockTime = Date.now() + 10000; // 10 saniye kilitle
+                    document.getElementById("message").textContent = "Çok fazla yanlış deneme. 10 saniye bekleyin.";
+                    attemptCount = 0;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
